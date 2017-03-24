@@ -1,0 +1,62 @@
+---
+# tasks file for myapp1
+# tasks file for apache2
+
+ - name: installing app specific packages 
+   apt: name={{item}} state=present update_cache=yes
+   with_items:
+     - python-mysqldb
+     - php5-mysql
+     - libapache2-mod-php5
+     - php5-mcrypt
+     - php5-gd
+     - libssh2-php
+     - mysql-client
+     - git
+   tags: 
+     - packages
+
+
+
+
+ - name: deploy the wp app code via git 
+   shell: |
+       cd /var/www/{{item.key}}
+       git pull 1>&1 | grep "Already up-to-date."
+       if 
+       rm -rf /var/www/{{item.key}}
+       git clone  https://github.com/agnellogeorgedsouza/default_wp_repo.git /var/www/{{item.key}} 
+   with_dict: "{{ sites }}"
+   notify: restart apache2
+   tags:
+     - gitdeploycode
+
+
+ - name: wordpress conf file
+   template: src="{{ wp_template_pth }}/wp-config.php.j2"  dest="/var/www/{{item.key}}/wp-config.php" mode=744
+   #debug:  msg=" src={{ wp_template_pth }}/wp-config.php.j2  dest=/var/www/{{item.key}}/wp-config.php"
+   with_dict: "{{ sites }}"
+   notify: restart apache2
+   tags:
+     - deployWPconfigfile
+
+ - name: copy apache virtaul conf file
+   template: src={{ wp_template_pth }}/wp_app_apache.conf  dest=/etc/apache2/sites-available/wp_app_apache.conf
+   with_dict: "{{ sites }}"
+   notify: restart apache2
+   tags: 
+    - apachevhost
+
+
+ - name:  activate apache wp_app_apache.conf 
+   file: src=/etc/apache2/sites-available/wp_app_apache.conf   dest=/etc/apache2/sites-enabled/wp_app_apache.conf  state=link
+   notify: restart apache2
+
+ - name: deactivate apache dafault.conf
+   file: path={{item}}  state=absent
+   with_items:
+       - /etc/apache2/sites-enabled/000-default.conf
+   notify: restart apache2
+
+ - name: ensure apache is started
+   service: name=apache2 state=started

@@ -2,7 +2,8 @@ upstream demo {
 
         {% for serv in groups['webserver'] %}
 
-	server  {{ serv }}    ;
+	server  {{ hostvars[serv].ansible_host }}    ;
+
 	{% endfor %}
 }
 

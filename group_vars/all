@@ -1,0 +1,15 @@
+---
+# setting my wp app DB connetion 
+wp_mysql_db: wordpress
+wp_mysql_user: wordpress
+wp_mysql_password: wp_db_password
+wp_host: '192.168.0.161'
+
+# for apache and nginx 
+wp_repo_pth: '/vagrant/wordpress_ansible/myworpressapp_repo/wordpress_docroot'
+wp_template_pth: '/vagrant/wordpress_ansible/myworpressapp_repo/wp_config_templates'
+
+sites:
+  wpapp:
+    backendport: 80
+    frontendport: 80

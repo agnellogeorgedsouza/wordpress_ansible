@@ -3,5 +3,5 @@
    become: true
    roles: 
      - apache2
-     - myapp1
+     - mywordpressapp
       

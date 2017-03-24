@@ -1,0 +1,7 @@
+---
+ - hosts: database
+   become: true
+   roles: 
+     - mysql
+#  roles: 
+#    - { role: mysql , db_name: demo, db_user_name: demo, db_user_pass: demo, db_host: '%' } 

@@ -1,0 +1,23 @@
+---
+# tasks file for mysql
+# - name: install databases on "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+ - name: install databases on "{{ ansible_eth1.ipv4.address  }}"
+   apt: name={{item}} state=present update_cache=yes
+   with_items:
+    - python-mysqldb
+    - mysql-server
+
+ - name: ensure mysql server  is started
+   service: name=mysql state=started
+
+ - name: allow mysql to listen in all
+   lineinfile: dest=/etc/mysql/my.cnf regexp=^bind-address
+        line="bind-address={{ansible_eth1.ipv4.address}}"
+   notify: restart mysql
+
+ - name: create database {{ wp_mysql_db }}
+   mysql_db: name={{wp_mysql_user}} state=present
+
+
+ - name: create  user {{ wp_mysql_user }}
+   mysql_user: name={{ wp_mysql_user }} password={{ wp_mysql_password  }} priv={{ wp_mysql_db }}.*:ALL host='%' state=present

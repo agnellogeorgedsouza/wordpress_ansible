@@ -5,6 +5,8 @@
    template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ item.key }} mode=0644
    with_dict: "{{ sites }}"
    notify: restart nginx
+   tags:
+    - configLBnginxconf
 
  - name: get list of non active sites 
    shell: ls /etc/nginx/sites-enabled
