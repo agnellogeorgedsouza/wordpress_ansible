@@ -1,0 +1,7 @@
+
+
+{% for serv in groups['all'] %}
+
+{{hostvars[serv]['ansible_host']}}  {{ serv }}
+        {% endfor %}
+

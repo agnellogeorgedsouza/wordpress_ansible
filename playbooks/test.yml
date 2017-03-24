@@ -1,0 +1,12 @@
+---
+ - hosts: webservers
+   tasks:
+     - name: verify if the webservers  is sending response
+       uri: url=http://{{item}} return_content=yes
+       with_items: groups.webservers
+       register: webserver_content
+
+     - fail: msg="index failed to return content"
+       when: "Hello, from sunny" not in item.content
+       debug: var="{{item}}"
+       with_item: "{{webserver_content.results}}"

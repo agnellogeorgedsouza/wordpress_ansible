@@ -1,0 +1,6 @@
+---
+# defaults file for loadbalancer
+sites:
+  myapp1:
+    backendport: 80
+    frontendport: 80

@@ -1,0 +1,6 @@
+---
+ - include: hosts.yml
+ - include: control.yml
+ - include: webserver.yml
+ - include: databases.yml
+ - include: loadbalancer.yml
